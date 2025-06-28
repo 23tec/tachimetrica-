@@ -414,9 +414,9 @@ void loop() {
 
             if (input >= speedPot) 
                 motorAccel = false;
-        } 
-
-        setpoint = speedPot;
+        } else 
+          setpoint = speedPot;
+        }
 
         // Fami sentire quando il motore è sotto sforzo
         if (!motorAccel && input - setpoint <= -8.0) 
