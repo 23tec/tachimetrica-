@@ -307,7 +307,7 @@ void setSpeed() {
         PORTD |= (1 << TRIAC_pin);
         zero = false;
         firingDelay = 0;
-    } else firingDay++;
+    } else firingDelay++;
 }
 
 
