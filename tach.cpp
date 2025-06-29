@@ -414,7 +414,7 @@ void loop() {
 
             if (input >= speedPot) 
                 motorAccel = false;
-        } else 
+        } else {
           setpoint = speedPot;
         }
 
