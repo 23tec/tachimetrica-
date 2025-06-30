@@ -82,39 +82,39 @@ void serialReceive() {
 }
 
 
-#define ee(x, addr, var) \
-    do { \
-        if (x) \
-            eeprom.put(addr, var); \
-        else \
-            eeprom.get(addr, var); \
-    } while (0)
+template<typename T> void ee(bool read, int addr, T& var) {
+  if (read) 
+    eeprom.get(addr, var);
+  else
+    eeprom.put(addr, var);
+}
+
 
 void storage(int rw) {
-    if (!eeprom.isConnected(0x50) || eeprom.isBusy(0x50)) {
-        if (Serial) Serial.println("Errore eeprom");
+    if (!eeprom.isConnected(0x50)) {
+        if (Serial) Serial.println("Memoria non rilevata");
         return;
     }
 
+    // Con polling abilitato (enablePollForWriteComplete) non abbiamo bisogno di 
+    // usare un delay per ogni scrittura. La eeprom ci manda un bit WIP dopo fine 
+    // ciclo.
+    // eeprom.disablePollForWriteComplete();
+    // eeprom.setWriteTimeMs(7);
+  
     ee(rw, 0, kp); // float
-    delay(7);
     ee(rw, 4, ki); // float
-    delay(7);
     ee(rw, 8, kd); // float
-    delay(7);
     ee(rw, 12, rampAccel); // float
-    delay(7);
     ee(rw, 16, rampDecel); // float
-    delay(7);
     ee(rw, 20, maxSpeed); // int
-    delay(7);
 
     beep();
 }
 
 
 char *removeLn(char *str) {
-    size_t n = strcspn(str, '\n');
+    size_t n = strcspn(str, "\n");
     if (n) *(str + n) = '\0';
     return str;
 }
