@@ -95,7 +95,7 @@ const char* const SERIAL_MSG[] PROGMEM = { M0, M1, M2, M3, M4, M5, M6 };
 byte sentMask = 0, mFlag = M_NONE;
 
 
-void sendMessage()
+void sendMessage() {
     char buf[30];
     
     if (mFlag == M_NONE || (sentMask & (1 << mFlag)) != 0 
