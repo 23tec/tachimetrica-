@@ -80,6 +80,7 @@ ExternalEEPROM eeprom;
 #define M_RAMP           4
 #define M_EEPROM_ERR     5
 #define M_OPTO_ERR       6
+#define M_IDLE     7
 
 #define M_NONE        0xFF
 
@@ -90,7 +91,8 @@ const char M3[] PROGMEM = "Tachimetrica segnale assente";
 const char M4[] PROGMEM = "Rampa completata";
 const char M5[] PROGMEM = "Memoria esterna non trovata";
 const char M6[] PROGMEM = "Foto accoppiatore non risponde";
-const char* const SERIAL_MSG[] PROGMEM = { M0, M1, M2, M3, M4, M5, M6 };
+const char M7[] PROGMEM = "Motore fermo";
+const char* const SERIAL_MSG[] PROGMEM = { M0, M1, M2, M3, M4, M5, M6, M7 };
 
 byte sentMask = 0, mFlag = M_NONE;
 
@@ -558,6 +560,8 @@ void loop() {
         if (pidSetPoint <= 0.0) {
             pid.SetMode(MANUAL);
             pidInput = pidOutput = 0;
+
+            mFlag = M_IDLE;
         } else {
             mFlag = M_DECELERATION;
         }
