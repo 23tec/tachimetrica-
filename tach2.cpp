@@ -80,7 +80,7 @@ ExternalEEPROM eeprom;
 #define M_RAMP           4
 #define M_EEPROM_ERR     5
 #define M_OPTO_ERR       6
-#define M_IDLE     7
+#define M_IDLE           7
 
 #define M_NONE        0xFF
 
