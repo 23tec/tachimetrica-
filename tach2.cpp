@@ -98,15 +98,12 @@ byte sentMask = 0, mFlag = M_NONE;
 
 
 void sendMessage() {
-    char buf[30];
-    
     if (mFlag == M_NONE || (sentMask & (1 << mFlag)) != 0 
         || mFlag >= ARRAY_LEN(SERIAL_MSG)) 
         return;
         
-    strcpy_P(buf, (PGM_P) pgm_read_ptr(&SERIAL_MSG[mFlag]));
-    Serial.println(buf);
-
+    Serial.println(PGM_P) pgm_read_ptr(&SERIAL_MSG[mFlag]));
+  
     sentMask |= (1 << mFlag);
     mFlag = M_NONE;
 }
