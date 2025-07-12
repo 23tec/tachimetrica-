@@ -102,7 +102,7 @@ void sendMessage() {
         || mFlag >= ARRAY_LEN(SERIAL_MSG)) 
         return;
         
-    Serial.println(PGM_P) pgm_read_ptr(&SERIAL_MSG[mFlag]));
+    Serial.println((PGM_P) pgm_read_ptr(&SERIAL_MSG[mFlag]));
   
     sentMask |= (1 << mFlag);
     mFlag = M_NONE;
