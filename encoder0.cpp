@@ -10,7 +10,7 @@
 #define TOUCHDRO_TIMEOUT    100
 #define HALLSENSOR_PIN       16
 #define TACH_REFRESH_RATE   500 
-
+#define POLES                 1
 
 class Encoder {
 private:
