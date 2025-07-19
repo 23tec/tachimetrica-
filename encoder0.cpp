@@ -1,5 +1,7 @@
 // Encoder.cpp - Lettura encoder a quadratura con esp32-devkit v1
 // Angelo Z. (2025)
+
+// I Encoders vanno usati con una accelerazione e non girati bruscamente 
 #include <Arduino.h>
 #include "driver/pcnt.h"
 
