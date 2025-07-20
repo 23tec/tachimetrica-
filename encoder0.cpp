@@ -7,15 +7,17 @@
 
 #define BAUDRATE 115200
 
-#define TOUCHDRO_TIMEOUT    100
-#define HALLSENSOR_PIN       16
+#define TOUCHDRO_TIMEOUT    500
+#define GLITCH_MS_DEFAULT   500
+#define POWER_LED_PIN        12
+#define HALLSENSOR_PIN        4
 #define TACH_REFRESH_RATE   500 
 #define POLES                 1
 
 class Encoder {
 private:
-    int pinA;
-    int pinB;
+    int pin_a;
+    int pin_b;
     pcnt_unit_t unit;
     pcnt_channel_t channel;
     int16_t count;
@@ -23,21 +25,21 @@ private:
     bool turn;
 
 public:
-    Encoder(int chA, int chB, pcnt_unit_t ui, pcnt_channel_t ch) {
-        pinA = chA;
-        pinB = chB;
+    Encoder(int a, int b, pcnt_unit_t ui, pcnt_channel_t ch) {
+        pin_a = a;
+        pin_b = b;
         unit = ui;
         channel = ch;
         count = 0;
         lastCount = 0;
         turn = false;
 
-        pinMode(pinA, INPUT_PULLUP);
-        pinMode(pinB, INPUT_PULLUP);
+        pinMode(pin_a, INPUT);
+        pinMode(pin_b, INPUT);
 
         pcnt_config_t config = {
-            .pulse_gpio_num = pinA,
-            .ctrl_gpio_num = pinB,
+            .pulse_gpio_num = pin_a,
+            .ctrl_gpio_num = pin_b,
             .lctrl_mode = PCNT_MODE_REVERSE,
             .hctrl_mode = PCNT_MODE_KEEP,
             .pos_mode = PCNT_COUNT_INC,
@@ -50,7 +52,7 @@ public:
 
         pcnt_unit_config(&config);
 
-        //pcnt_set_filter_value(unit, 100);
+        //pcnt_set_filter_value(unit, GLITCH_MS_DEFAULT);
         //pcnt_filter_enable(unit);
         pcnt_filter_disable(unit);
 
@@ -94,14 +96,20 @@ unsigned long lastRpmTime = 0;
 int16_t lastRpm = 0;
 
 
+void IRAM_ATTR tachISR() { sensorPulses++; }
+
 void setup() {
   Serial.begin(BAUDRATE);
-  
+
+  pinMode(POWER_LED_PIN, OUTPUT);
   pinMode(HALLSENSOR_PIN, INPUT_PULLUP);
-  attachInterrupt(HALLSENSOR_PIN, tachISR, RISING);
-  
+    
+  attachInterrupt(HALLSENSOR_PIN, tachISR, FALLIMG);
+
+  digitalWrite(POWER_LED_PIN, HIGH);
   lastRpmTime = millis();
 }
+
 
 // Touchdro string format Z0; X0; T0;
 void serialSend(int16_t dataBlock, char prefix) {
@@ -109,8 +117,6 @@ void serialSend(int16_t dataBlock, char prefix) {
     Serial.print(dataBlock);
     Serial.println(";");
 }
-
-void IRAM_ATTR tachISR() { sensorPulses++; }
 
 
 int16_t getRpm() {
@@ -131,6 +137,7 @@ int16_t getRpm() {
 
     return rpm;
 }
+
 
 void loop() {
   int16_t rpm = getRpm();
